@@ -3,12 +3,12 @@ import ballerina/io;
 import ballerina/log;
 import ballerina/random;
 import ballerinax/googleapis.drive;
-import ballerinax/mysql.driver as _;
 import ballerinax/mysql;
+import ballerinax/mysql.driver as _;
 
 const noOfTotalMacbookWinners = 10;
-const X_JWT_ASSERTION = "X-JWT-Assertion";
 
+configurable string mode = "LOCAL";
 configurable string csvFilePath = "/tmp/drawEntries.csv";
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -31,26 +31,28 @@ drive:ConnectionConfig config = {
     }
 };
 final drive:Client driveClient = check new (config);
-final mysql:Client dbClient = check new(HOST, USER, PASSWORD, DATABASE, PORT);
+final mysql:Client|error dbClient = new(HOST, USER, PASSWORD, DATABASE, PORT);
 
 service / on new http:Listener(9090) {
 
     function init() returns error? {
-        drive:FileContent fileContent = check driveClient->getFileContent(fileId);
-        byte[] content = fileContent.content;
-        error? writeFile = io:fileWriteBytes(csvFilePath, content);
-        if writeFile is error {
-            log:printError("Error writing file: ", writeFile);
+        if mode != LOCAL {
+            log:printInfo("Downloading file from google drive");
+            error? downloadFile = getFileFromGoogleDrive();
+            if downloadFile is error {
+                log:printError("Error downloading file from google drive: ", downloadFile);
+                return error("Error downloading file from google drive");
+            }
         }
         log:printInfo("Service started");
     }
 
-    isolated resource function get macbook\-winners(@http:Header {name: X_JWT_ASSERTION} string jwtToken) returns 
-            Participant[]|error {
-        string username = check getUsernameFromJwt(jwtToken);
+    isolated resource function get macbook\-winners(@http:Header {name: X_JWT_ASSERTION} string? jwtToken, 
+            @http:Header {name: X_USERNAME} string x_username) returns Participant[]|error {
+        string username = check getUsername(jwtToken, x_username);
         Participant[] winners = [];
         string[][] data = check io:fileReadCsv(csvFilePath);
-        
+
         int firstRowIndex = 0;
         int lastRowIndex = data.length() - 1;
 
@@ -65,15 +67,26 @@ service / on new http:Listener(9090) {
         foreach Participant winner in winnerMap {
             winners.push(winner);
         }
-        check persistMacbookWinners(winners, username);
+        error? persistWinners = persistMacbookWinners(winners, username, dbClient);
+        if persistWinners is error {
+            log:printError("Error persisting macbook winners: ", persistWinners);
+        }
         return winners;
     }
 
-    isolated resource function get cybertruck\-winner(@http:Header {name: X_JWT_ASSERTION} string jwtToken) returns 
+    isolated resource function post cybertruck\-winner(@http:Header {name: X_JWT_ASSERTION} string? jwtToken,
+            @http:Header {name: X_USERNAME} string x_username, @http:Payload Participant[] payload) returns 
             Participant|error {
-        string username = check getUsernameFromJwt(jwtToken);
+        string username = check getUsername(jwtToken, x_username);
         string[][] data = check io:fileReadCsv(csvFilePath);
-        Participant[] macbookWinners = check getMacbookWinners();
+        Participant[] macbookWinners = payload;
+        Participant[]|error macbookWinnersInDatabase = getMacbookWinners(dbClient);
+        
+        if macbookWinnersInDatabase is error {
+            log:printInfo("Error getting macbook winners from database. Hence, using the winners from the payload.");
+        } else {
+            macbookWinners = macbookWinnersInDatabase;
+        }
 
         int firstRowIndex = 0;
         int lastRowIndex = data.length() - 1;
@@ -83,11 +96,14 @@ service / on new http:Listener(9090) {
             string name = capitalizeName(data[randomIndex][1]);
             Participant winner = {orgId: data[randomIndex][0], name, country: data[randomIndex][2]};
             final string winnerOrgId = winner.orgId;
-            boolean alreadyWonMacbook = macbookWinners.some(isolated function (Participant macbookWinner) returns boolean {
+            boolean alreadyWonMacbook = macbookWinners.some(isolated function(Participant macbookWinner) returns boolean {
                 return macbookWinner.orgId == winnerOrgId;
             });
             if !alreadyWonMacbook {
-                check persistCyberTruckWinner(winner, username);
+                error? persist = persistCyberTruckWinner(winner, username, dbClient);
+                if persist is error {
+                    log:printError("Error persisting cybertruck winner: ", persist);
+                }
                 return winner;
             }
         }
