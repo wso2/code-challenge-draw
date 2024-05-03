@@ -5,17 +5,12 @@ import { Button } from "@mui/material";
 import { getCyberTruckWinner } from "../api/api";
 import { AnimatedMacbookWinner, CountryTypography } from "../AnimatedTypography/AnimatedTypography";
 
-const CyberTruckWinner = () => {
+const CyberTruckWinner = ({ macbookWinners }) => {
   const [displayWinner, setDisplayWinner] = useState(false);
-  const [winner, setWinner] = useState({
-    name: 'Alex Smith',
-    country: 'United States'
-  });
-
-  useEffect(() => {}, []);
+  const [winner, setWinner] = useState({});
 
   const showCyberTruckWinnerClicked = async () => {
-    const winnerData = await getCyberTruckWinner();
+    const winnerData = await getCyberTruckWinner(macbookWinners);
     setWinner(winnerData);
     setDisplayWinner(true);
   }

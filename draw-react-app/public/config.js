@@ -1,4 +1,4 @@
 window.config = {
     baseUrl: "",
-    token: ""
+    username: ""
 };

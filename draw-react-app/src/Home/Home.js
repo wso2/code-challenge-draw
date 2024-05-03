@@ -6,16 +6,23 @@ import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
 const Home = () => {
+  const [winners, setWinners] = useState([]);
   const [page, setPage] = useState("macbookWinners");
   const [displayNext, setDisplayNext] = useState(false);
-  useEffect(() => {}, []);
+
+  const setWinnersPayload = (winnersData) => {
+    setWinners(winnersData);
+  }
 
   return (
     <div className="homeBackground">
       {page === "macbookWinners" ? (
-        <MacBookWinners setDisplayNext={setDisplayNext} />
+        <MacBookWinners
+          setDisplayNext={setDisplayNext}
+          setWinnersPayload={setWinnersPayload}
+        />
       ) : (
-        <CyberTruckWinner />
+        <CyberTruckWinner macbookWinners={winners} />
       )}
       <Box
         sx={{
