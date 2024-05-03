@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const baseUrl = window.config.baseUrl;
-const token = window.config.token;
+const username = window.config.username;
 
 const headers = {
-  'X-JWT-Assertion': token
+  "X-Username": username,
 };
 
 export const getMacbookWinners = async () => {
@@ -45,9 +45,13 @@ export const getMacbookWinners = async () => {
   }
 };
 
-export const getCyberTruckWinner = async () => {
+export const getCyberTruckWinner = async (payload) => {
   try {
-    const response = await axios.get(`${baseUrl}/cybertruck-winner`, { headers });
+    const response = await axios.post(
+      `${baseUrl}/cybertruck-winner`,
+      payload,
+      { headers }
+    );
     console.log(response);
     return response.data;
   } catch (error) {

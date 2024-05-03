@@ -5,15 +5,14 @@ import { Button, Typography } from "@mui/material";
 import { getMacbookWinners } from "../api/api";
 import { AnimatedMacbookWinner } from "../AnimatedTypography/AnimatedTypography";
 
-const MacBookWinners = ({ setDisplayNext }) => {
+const MacBookWinners = ({ setDisplayNext, setWinnersPayload }) => {
   const [displayWinners, setDisplayWinners] = useState(false);
-  const [winners, setWinners] = useState([]);
   const [leftColumnWinners, setLeftColumnWinners] = useState([]);
   const [rightColumnWinners, setRightColumnWinners] = useState([]);
 
   const showMacWinnersClicked = async () => {
     const winnersData = await getMacbookWinners();
-    setWinners(winnersData);
+    setWinnersPayload(winnersData);
     setLeftColumnWinners(winnersData.slice(0, 5));
     setRightColumnWinners(winnersData.slice(5));
     setDisplayWinners(true);
