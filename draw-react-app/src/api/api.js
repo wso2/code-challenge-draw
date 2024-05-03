@@ -9,7 +9,7 @@ const headers = {
 
 export const getMacbookWinners = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/macbook-winners`);
+    const response = await axios.get(`${baseUrl}/macbook-winners`, { headers });
     console.log(response);
     return response.data;
   } catch (error) {
@@ -47,7 +47,7 @@ export const getMacbookWinners = async () => {
 
 export const getCyberTruckWinner = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/cybertruck-winner`);
+    const response = await axios.get(`${baseUrl}/cybertruck-winner`, { headers });
     console.log(response);
     return response.data;
   } catch (error) {
