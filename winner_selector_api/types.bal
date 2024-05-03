@@ -8,3 +8,7 @@ public type Participant record {|
     string name;
     string country;
 |};
+
+const LOCAL = "LOCAL";
+const X_JWT_ASSERTION = "X-JWT-Assertion";
+const X_USERNAME = "X-Username";
