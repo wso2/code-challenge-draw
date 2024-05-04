@@ -47,8 +47,8 @@ service / on new http:Listener(9090) {
         log:printInfo("Service started");
     }
 
-    isolated resource function get macbook\-winners(@http:Header {name: X_JWT_ASSERTION} string? jwtToken, 
-            @http:Header {name: X_USERNAME} string x_username) returns Participant[]|error {
+    isolated resource function get macbook\-winners(@http:Header {name: "X-JWT-Assertion"} string? jwtToken, 
+            @http:Header {name: "X-Username"} string x_username) returns Participant[]|error {
         string username = check getUsername(jwtToken, x_username);
         Participant[] winners = [];
         string[][] data = check io:fileReadCsv(csvFilePath);
@@ -74,8 +74,8 @@ service / on new http:Listener(9090) {
         return winners;
     }
 
-    isolated resource function post cybertruck\-winner(@http:Header {name: X_JWT_ASSERTION} string? jwtToken,
-            @http:Header {name: X_USERNAME} string x_username, @http:Payload Participant[] payload) returns 
+    isolated resource function post cybertruck\-winner(@http:Header {name: "X-JWT-Assertion"} string? jwtToken,
+            @http:Header {name: "X-Username"} string x_username, @http:Payload Participant[] payload) returns 
             Participant|error {
         string username = check getUsername(jwtToken, x_username);
         string[][] data = check io:fileReadCsv(csvFilePath);
