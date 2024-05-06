@@ -21,11 +21,6 @@ export const AnimatedMacbookWinner = ({ actualWinner }) => {
       {actualWinner}
     </Typography>
   );
-  const bar = (
-    <>
-      <div class="loader-mb-winner bars" style={{ height: 20 }}></div>
-    </>
-  );
   return (
     <Box
       height={75}
@@ -35,7 +30,7 @@ export const AnimatedMacbookWinner = ({ actualWinner }) => {
       justifyContent="flex-start"
       alignItems="center"
     >
-      {bar}
+      <div class="loader-mb-winner bars" style={{ height: 20 }}></div>
       <Box height="fit-content" className="animated-mb-winner-text">
         {elements}
       </Box>
@@ -61,11 +56,6 @@ export const AnimatedTruckWinner = ({ actualWinner }) => {
       {actualWinner}
     </Typography>
   );
-  const bar = (
-    <>
-      <div class="loader-truck-winner bars" style={{ height: 20 }}></div>
-    </>
-  );
   return (
     <Box
       height={75}
@@ -75,7 +65,7 @@ export const AnimatedTruckWinner = ({ actualWinner }) => {
       justifyContent="flex-start"
       alignItems="center"
     >
-      {bar}
+      <div class="loader-truck-winner bars" style={{ height: 20 }}></div>
       <Box height="fit-content" className="animated-truck-winner-text">
         {elements}
       </Box>
