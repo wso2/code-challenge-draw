@@ -10,11 +10,11 @@ const TOTAL_MACBOOK_WINNERS = 10;
 
 configurable string mode = "LOCAL";
 configurable string csvFilePath = "/tmp/drawEntries.csv";
-configurable string refreshToken = ?;
-configurable string clientId = ?;
-configurable string clientSecret = ?;
+configurable string refreshToken = "";
+configurable string clientId = "";
+configurable string clientSecret = "";
 configurable string refreshUrl = drive:REFRESH_URL;
-configurable string fileId = ?;
+configurable string fileId = "";
 
 configurable string user = ?;
 configurable string password = ?;
@@ -30,7 +30,8 @@ drive:ConnectionConfig config = {
         refreshToken
     }
 };
-final drive:Client driveClient = check new (config);
+// In local mode, google drive is not used
+final drive:Client|error driveClient = new (config);
 
 // Incase of an error with database, still continue as the database is not mandatory
 final mysql:Client|error dbClient = new(host, user, password, database, port);
@@ -41,7 +42,7 @@ service / on new http:Listener(9090) {
         // Download the file from google drive if the mode is not LOCAL
         if mode != LOCAL {
             log:printInfo("Downloading file from google drive");
-            error? downloadFile = getFileFromGoogleDrive();
+            error? downloadFile = getFileFromGoogleDrive(driveClient);
             if downloadFile is error {
                 log:printError("Error downloading file from google drive: ", downloadFile);
                 return error("Error downloading file from google drive");

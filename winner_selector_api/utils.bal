@@ -75,8 +75,16 @@ isolated function capitalizeName(string name) returns string {
     return capitalizedName.trim();
 }
 
-isolated function getFileFromGoogleDrive() returns error? {
-    drive:FileContent fileContent = check driveClient->getFileContent(fileId);
+isolated function getFileFromGoogleDrive(drive:Client|error gDriveClient) returns error? {
+    if gDriveClient is error {
+        log:printError("Google Drive client is not initialized", gDriveClient);
+        return error("Google Drive client is not initialized");
+    }
+    drive:FileContent|error fileContent = gDriveClient->getFileContent(fileId);
+    if fileContent is error {
+        log:printError("Error getting file content from Google Drive: ", fileContent);
+        return error("Error getting file content from Google Drive");
+    }   
     byte[] content = fileContent.content;
     error? writeFile = io:fileWriteBytes(csvFilePath, content);
     if writeFile is error {
