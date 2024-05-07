@@ -20,17 +20,23 @@ isolated function getUsername(string? jwtToken, string username) returns string|
 
 isolated function getMacbookWinners(mysql:Client|error mysqlClient) returns Participant[]|error {
     if mysqlClient is error {
-         return error("Database client is not initialized");
+        log:printError("Database client is not initialized", mysqlClient);
+        return error("Database client is not initialized");
     } 
     sql:ParameterizedQuery query = `SELECT winners FROM macbook_winners ORDER BY timestamp DESC LIMIT 1`;
-    json winnersJson = check mysqlClient->queryRow(query);
+    json|error winnersJson = mysqlClient->queryRow(query);
+    if winnersJson is error {
+        log:printError("Error getting macbook winners from the database: ", winnersJson);
+        return error("Error getting macbook winners");
+    }
     Participant[] winners = check winnersJson.cloneWithType();
     return winners;
 }
 
 isolated function persistMacbookWinners(Participant[] winners, string username, mysql:Client|error mysqlClient) returns error? {
     if mysqlClient is error {
-         return error("Database client is not initialized");
+        log:printError("Database client is not initialized", mysqlClient);
+        return error("Database client is not initialized");
     } 
     sql:ParameterizedQuery query = `INSERT INTO macbook_winners (username, winners) VALUES (${username}, 
         ${winners.toJsonString()});`;
@@ -43,7 +49,8 @@ isolated function persistMacbookWinners(Participant[] winners, string username, 
 
 isolated function persistCyberTruckWinner(Participant winner, string username, mysql:Client|error mysqlClient) returns error? {
     if mysqlClient is error {
-         return error("Database client is not initialized");
+        log:printError("Database client is not initialized", mysqlClient);
+        return error("Database client is not initialized");
     } 
     sql:ParameterizedQuery query = `INSERT INTO cybertruck_winner (username, winner) VALUES (${username}, 
         ${winner.toJsonString()});`;
@@ -59,18 +66,13 @@ isolated function uppercaseFirstLetter(string word) returns string {
         return word;
     }
     string firstLetter = word.substring(0, 1);
-    string restOfWord = word.substring(1);
-    return firstLetter.toUpperAscii() + restOfWord;
+    return firstLetter.toUpperAscii() + word.substring(1);
 }
 
 isolated function capitalizeName(string name) returns string {
-    string capitalizedName = "";
     string[] words = regexp:split(re ` `, name.toLowerAscii());
-    foreach string item in words {
-        string capitalizedWord = uppercaseFirstLetter(item);
-        capitalizedName = capitalizedName + " " + capitalizedWord;
-    }
-    return capitalizedName;
+    string capitalizedName = from string word in words select uppercaseFirstLetter(word) + " ";
+    return capitalizedName.trim();
 }
 
 isolated function getFileFromGoogleDrive() returns error? {
@@ -79,5 +81,6 @@ isolated function getFileFromGoogleDrive() returns error? {
     error? writeFile = io:fileWriteBytes(csvFilePath, content);
     if writeFile is error {
         log:printError("Error writing file: ", writeFile);
+        return error("Error writing file");
     }
 }

@@ -6,7 +6,7 @@ import ballerinax/googleapis.drive;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 
-const noOfTotalMacbookWinners = 10;
+const TOTAL_MACBOOK_WINNERS = 10;
 
 configurable string mode = "LOCAL";
 configurable string csvFilePath = "/tmp/drawEntries.csv";
@@ -16,11 +16,11 @@ configurable string clientSecret = ?;
 configurable string refreshUrl = drive:REFRESH_URL;
 configurable string fileId = ?;
 
-configurable string USER = ?;
-configurable string PASSWORD = ?;
-configurable string HOST = ?;
-configurable int PORT = 21113;
-configurable string DATABASE = ?;
+configurable string user = ?;
+configurable string password = ?;
+configurable string host = ?;
+configurable int port = 21113;
+configurable string database = ?;
 
 drive:ConnectionConfig config = {
     auth: {
@@ -31,11 +31,14 @@ drive:ConnectionConfig config = {
     }
 };
 final drive:Client driveClient = check new (config);
-final mysql:Client|error dbClient = new(HOST, USER, PASSWORD, DATABASE, PORT);
+
+// Incase of an error with database, still continue as the database is not mandatory
+final mysql:Client|error dbClient = new(host, user, password, database, port);
 
 service / on new http:Listener(9090) {
 
     function init() returns error? {
+        // Download the file from google drive if the mode is not LOCAL
         if mode != LOCAL {
             log:printInfo("Downloading file from google drive");
             error? downloadFile = getFileFromGoogleDrive();
@@ -50,7 +53,6 @@ service / on new http:Listener(9090) {
     isolated resource function get macbook\-winners(@http:Header {name: "X-JWT-Assertion"} string? jwtToken, 
             @http:Header {name: "X-Username"} string x_username) returns Participant[]|error {
         string username = check getUsername(jwtToken, x_username);
-        Participant[] winners = [];
         string[][] data = check io:fileReadCsv(csvFilePath);
 
         int firstRowIndex = 0;
@@ -58,18 +60,21 @@ service / on new http:Listener(9090) {
 
         map<Participant> winnerMap = {};
 
-        while winnerMap.length() < noOfTotalMacbookWinners {
+        while winnerMap.length() < TOTAL_MACBOOK_WINNERS {
             int randomIndex = check random:createIntInRange(firstRowIndex, lastRowIndex);
+            string[] participantDetails = data[randomIndex];
+            string orgId = participantDetails[0];
+            if winnerMap.hasKey(orgId) {
+                continue;
+            }
             string name = capitalizeName(data[randomIndex][1]);
-            Participant winner = {orgId: data[randomIndex][0], name, country: data[randomIndex][2]};
-            winnerMap[winner.orgId] = winner;
+            winnerMap[orgId] = {orgId, name, country: data[randomIndex][2]};
         }
-        foreach Participant winner in winnerMap {
-            winners.push(winner);
-        }
+        Participant[] winners = from Participant winner in winnerMap select winner;
         error? persistWinners = persistMacbookWinners(winners, username, dbClient);
         if persistWinners is error {
             log:printError("Error persisting macbook winners: ", persistWinners);
+            // Ignore the error and return the winners as persisting the winners is not mandatory
         }
         return winners;
     }
@@ -85,6 +90,7 @@ service / on new http:Listener(9090) {
         if macbookWinnersInDatabase is error {
             log:printInfo("Error getting macbook winners from database. Hence, using the winners from the payload.");
         } else {
+            // If there is an error with the database, use the winners from the request payload
             macbookWinners = macbookWinnersInDatabase;
         }
 
@@ -103,6 +109,7 @@ service / on new http:Listener(9090) {
                 error? persist = persistCyberTruckWinner(winner, username, dbClient);
                 if persist is error {
                     log:printError("Error persisting cybertruck winner: ", persist);
+                    // Ignore the error and continue as persisting the winner is not mandatory
                 }
                 return winner;
             }
