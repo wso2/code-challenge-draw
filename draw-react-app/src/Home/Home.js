@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Home.css";
 import MacBookWinners from "../MacBookWinners/MacbookWinners";
 import CyberTruckWinner from "../CyberTruckWinner/CyberTruckWinner";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
-const Home = () => {
+const Home = ({ skipMacbookWinners }) => {
   const [winners, setWinners] = useState([]);
   const [page, setPage] = useState("macbookWinners");
   const [displayNext, setDisplayNext] = useState(false);
 
   const setWinnersPayload = (winnersData) => {
     setWinners(winnersData);
-  }
+  };
 
   return (
     <div className="homeBackground">
-      {page === "macbookWinners" ? (
+      {page === "macbookWinners" && !skipMacbookWinners ? (
         <MacBookWinners
           setDisplayNext={setDisplayNext}
           setWinnersPayload={setWinnersPayload}

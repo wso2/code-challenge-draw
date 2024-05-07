@@ -43,19 +43,17 @@ function App() {
   if (loading) {
     return <div>Loading...</div>; // Or a more sophisticated loading indicator
   }
-  
+
   return (
-    // <Home/>
     <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route element={<ProtectedRoute isLoggedIn={loggedIn} />}>
-              <Route path="/" element={
-                <Home/>
-              } />
-            </Route>
-          </Routes>
-        </Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<ProtectedRoute isLoggedIn={loggedIn} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/grand-prize" element={<Home skipMacbookWinners />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
