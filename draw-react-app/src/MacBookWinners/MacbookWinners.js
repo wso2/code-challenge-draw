@@ -107,7 +107,7 @@ const MacBookWinners = ({ setDisplayNext, setWinnersPayload }) => {
               <img
                 src="select-winners.png"
                 alt="Winners"
-                style={{ width: "100%", maxWidth: "200px", height: "auto" }}
+                style={{ width: "100%", maxWidth: "300px", height: "auto" }}
               />
             }
             style={{

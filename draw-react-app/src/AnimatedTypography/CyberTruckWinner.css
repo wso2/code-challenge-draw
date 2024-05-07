@@ -1,100 +1,87 @@
-@keyframes random {
-  from {
-    transform: translateY(-50%);
-  }
-  25% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-30%);
-  }
-  75% {
-    transform: translateY(50%);
-  }
-  to {
-    transform: translateY(0%);
-  }
-}
-
-.animated-text {
-  animation: 4s 1 ease-in-out random;
-  transform: translateY(0%);
-}
-
 @keyframes opacity {
   from {
     opacity: 0;
   }
+  80% {
+    opacity: 0;
+  }
   90% {
     opacity: 0;
+    font-size: 0px;
   }
   to {
     opacity: 1;
+    font-size: inherit;
   }
 }
 
 @keyframes bars {
   from {
-    background-position: left;
     opacity: 1;
-  }
-  70% {
-    opacity: 1;
+    width: 0px;
+    border: 2px solid; 
   }
   90% {
-    opacity: 0.4;
+    opacity: 1;
+    border: 2px solid; 
   }
   to {
     opacity: 0;
-    background-position: right;
+    border: 0px solid; 
+    width: 350px;
   }
 }
 
-.animated-text2 {
+.animated-mb-winner-text {
   animation: 4s 1 ease-in-out opacity;
   transform: translateY(0%);
 }
 
-.animated-bar {
-  border-radius: 4px;
-  animation: bars 4s 1 ease-in-out;
+.animated-truck-winner-text {
+  animation: 10s 1 ease-in-out opacity;
   transform: translateY(0%);
-  width: 100%;
-  opacity: 0;
-  background: repeating-linear-gradient(
-      90deg,
-      rgb(48, 252, 252) 0%,
-      rgb(48, 252, 252) 10%,
-      rgb(0, 0, 0) 10%,
-      rgb(0, 0, 0) 12%,
-      rgba(48, 252, 252, 1) 12%,
-      rgba(48, 252, 252, 1) 22%,
-      rgba(0, 0, 0, 1) 22%,
-      rgba(0, 0, 0, 1) 24%,
-      rgba(48, 252, 252, 1) 24%,
-      rgba(48, 252, 252, 1) 40%,
-      rgba(0, 0, 0, 1) 40%,
-      rgba(0, 0, 0, 1) 42%,
-      rgba(48, 252, 252, 1) 42%,
-      rgba(48, 252, 252, 1) 50%,
-      rgba(0, 0, 0, 1) 50%,
-      rgba(0, 0, 0, 1) 52%,
-      rgba(48, 252, 252, 1) 52%,
-      rgba(48, 252, 252, 1) 60%,
-      rgba(0, 0, 0, 1) 60%,
-      rgba(0, 0, 0, 1) 62%,
-      rgba(48, 252, 252, 1) 62%,
-      rgba(48, 252, 252, 1) 70%,
-      rgba(0, 0, 0, 1) 70%,
-      rgba(0, 0, 0, 1) 72%,
-      rgba(48, 252, 252, 1) 72%,
-      rgba(48, 252, 252, 1) 80%,
-      rgba(0, 0, 0, 1) 80%,
-      rgba(0, 0, 0, 1) 82%,
-      rgba(48, 252, 252, 1) 82%,
-      rgba(48, 252, 252, 1) 90%,
-      rgba(0, 0, 0, 1) 90%,
-      rgba(0, 0, 0, 1) 160%
-    )
-    left/calc(4 * 100%/2) 100%;
+}
+
+@keyframes l6 {
+  100% {inset:0}
+}
+
+.loader-mb-winner {
+  position: absolute;
+  width: 0px;
+  height: 22px;
+  border-radius: 20px;
+  color: rgba(48, 252, 252, 1);
+  border:none;
+  position: relative;
+}
+
+.loader-mb-winner::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor;
+  animation: l6 1s 4, bars 1.5s 2;
+}
+
+.loader-truck-winner {
+  position: absolute;
+  width: 0px;
+  height: 22px;
+  border-radius: 20px;
+  color: rgba(48, 252, 252, 1);
+  border:none;
+  position: relative;
+}
+
+.loader-truck-winner::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor;
+  animation: l6 1s 10, bars 1.5s 6;
 }
