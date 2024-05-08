@@ -15,7 +15,7 @@
   }
 }
 
-@keyframes bars {
+@keyframes macbook-winner-bar {
   from {
     opacity: 1;
     width: 0px;
@@ -32,13 +32,30 @@
   }
 }
 
+@keyframes truck-winner-bar {
+  from {
+    opacity: 1;
+    width: 0px;
+    border: 2px solid; 
+  }
+  90% {
+    opacity: 1;
+    border: 2px solid; 
+  }
+  to {
+    opacity: 0;
+    border: 0px solid; 
+    width: 600px;
+  }
+}
+
 .animated-mb-winner-text {
-  animation: 4s 1 ease-in-out opacity;
+  animation: 2s 1 ease-in-out opacity;
   transform: translateY(0%);
 }
 
 .animated-truck-winner-text {
-  animation: 10s 1 ease-in-out opacity;
+  animation: 5s 1 ease-in-out opacity;
   transform: translateY(0%);
 }
 
@@ -63,7 +80,7 @@
   inset: 0 100% 0 0;
   border-radius: inherit;
   background: currentColor;
-  animation: l6 1s 4, bars 1.5s 2;
+  animation: l6 1s 2, macbook-winner-bar 2s 1;
 }
 
 .loader-truck-winner {
@@ -83,5 +100,5 @@
   inset: 0 100% 0 0;
   border-radius: inherit;
   background: currentColor;
-  animation: l6 1s 10, bars 1.5s 6;
+  animation: l6 1s 5, truck-winner-bar 1s 4;
 }

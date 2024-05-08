@@ -36,8 +36,7 @@ export const getMacbookWinners = async () => {
         throw error;
       }
       // Token refresh successful. Retry the API call.
-      const response = await axios.get(`${baseUrl}/macbook-winners`);
-      console.log(response);
+      const response = await axios.get(`${baseUrl}/macbook-winners`, { headers });
       return response.data;
     } else {
       throw error;
@@ -78,8 +77,11 @@ export const getCyberTruckWinner = async (payload) => {
         throw error;
       }
       // Token refresh successful. Retry the API call.
-      const response = await axios.get(`${baseUrl}/cybertruck-winner`);
-      console.log(response);
+      const response = await axios.post(
+        `${baseUrl}/cybertruck-winner`,
+        payload,
+        { headers }
+      );
       return response.data;
     } else {
       throw error;

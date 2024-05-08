@@ -17,7 +17,7 @@ const CyberTruckWinner = ({ macbookWinners }) => {
 
   return (
     <Box textAlign="center" className="cyberTruckWinnerBackground">
-      <Box sx={{display: 'flex', justifyContent: 'center', pt: 40, pl: 5}}>
+      <Box sx={{display: 'flex', justifyContent: 'center', pt: 40}}>
         {displayWinner ? (
           <div style={{marginTop: 40, flexDirection: "column", display: "flex", justifyContent: "center", alignItems: "center"}}>
             <AnimatedTruckWinner actualWinner={winner.name}/>

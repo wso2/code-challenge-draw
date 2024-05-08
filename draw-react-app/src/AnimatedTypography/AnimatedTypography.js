@@ -30,7 +30,7 @@ export const AnimatedMacbookWinner = ({ actualWinner }) => {
       justifyContent="flex-start"
       alignItems="center"
     >
-      <div class="loader-mb-winner bars" style={{ height: 20 }}></div>
+      <div class="loader-mb-winner macbook-winner-bar" style={{ height: 20 }}></div>
       <Box height="fit-content" className="animated-mb-winner-text">
         {elements}
       </Box>
@@ -41,7 +41,7 @@ export const AnimatedMacbookWinner = ({ actualWinner }) => {
 export const AnimatedTruckWinner = ({ actualWinner }) => {
   const elements = (
     <Typography
-      variant="h2"
+      variant="h1"
       color="#30fcfc"
       key={actualWinner}
       style={{
@@ -65,7 +65,7 @@ export const AnimatedTruckWinner = ({ actualWinner }) => {
       justifyContent="flex-start"
       alignItems="center"
     >
-      <div class="loader-truck-winner bars" style={{ height: 20 }}></div>
+      <div class="loader-truck-winner truck-winner-bar" style={{ height: 20 }}></div>
       <Box height="fit-content" className="animated-truck-winner-text">
         {elements}
       </Box>
@@ -76,7 +76,7 @@ export const AnimatedTruckWinner = ({ actualWinner }) => {
 export const CountryTypography = ({ countryName }) => {
   const elements = (
     <Typography
-      variant="h4"
+      variant="h2"
       color="#30fcfc"
       style={{
         padding: 10,
