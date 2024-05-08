@@ -29,16 +29,16 @@ const MacBookWinners = ({ setDisplayNext, setWinnersPayload }) => {
       if (displayWinners) {
          setCounter((counter) => counter + 1);
       }
-    }, 4000);
+    }, 2000);
     return () => clearInterval(interval);
   }, [displayWinners]);
   return (
     <Box textAlign="center" className="macbookWinnersBackground" display="flex" justifyContent="center" alignItems="center">
-      <Box maxWidth={1200}>
+      <Box maxWidth={1400}>
         {displayWinners ? (
-          <div style={{ display: "flex", gap:100, minWidth:1200, height:380, justifyContent:'center', alignItems:'flex-start'}}>
+          <div style={{ display: "flex", gap:100, minWidth:1400, height:380, justifyContent:'center', alignItems:'flex-start'}}>
             {/* Left column */}
-            <div style={{ display: "flex", flexDirection:'column', minWidth:500, justifyContent:'center'}}>
+            <div style={{ display: "flex", flexDirection:'column', width:700, justifyContent:'center'}}>
               {leftColumnWinners.map((winner, index) => {
                 return (
                   counter > index && (
@@ -67,7 +67,7 @@ const MacBookWinners = ({ setDisplayNext, setWinnersPayload }) => {
             </div>
 
             {/* Right column */}
-            <div style={{ display: "flex", flexDirection:'column',minWidth:500, justifyContent:'center' }}>
+            <div style={{ display: "flex", flexDirection:'column',width:700, justifyContent:'center' }}>
               {rightColumnWinners.map(
                 (winner, index) =>
                   counter > index + leftColumnWinners.length && (
